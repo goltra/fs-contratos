@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view>
+    <columns>
+        <group name="data" numcolumns="12">
+            <column numcolumns="3" name="Cliente" order="100">
+                <widget type="autocomplete" fieldname="codcliente" onclick="EditCliente" required="true">
+                    <values source="clientes" fieldcode="codcliente" fieldtitle="nombre" />
+                </widget>
+            </column>
+
+            <column numcolumns="3" name="Título" order="101">
+                <widget type="text" fieldname="titulo" />
+            </column>
+
+            <column numcolumns="2" name="Empleado" order="102">
+                <widget type="autocomplete" fieldname="codagente" onclick="EditAgente">
+                    <values source="agentes" fieldcode="codagente" fieldtitle="nombre" />
+                </widget>
+            </column>
+
+            <column numcolumns="2" name="Alta" order="103">
+                <widget type="date" fieldname="fecha_alta" />
+            </column>
+
+            <column numcolumns="2" name="Renovación" order="104" required="true">
+                <widget type="date" fieldname="fecha_renovacion" />
+            </column>
+        </group>
+        <group name="data-pago" numcolumns="12">
+            <column numcolumns="2" name="Importe" order="105">
+                <widget type="number" fieldname="importe_anual" />
+            </column>
+
+            <column numcolumns="2" name="Forma de pago" order="106">
+                <widget type="select" fieldname="codpago" required="true">
+                    <values source="formaspago" fieldcode="codpago" fieldtitle="descripcion" />
+                </widget>
+            </column>
+
+            <column numcolumns="2" name="Servicio cada:" order="106">
+                <widget type="select" fieldname="periodo" required="true">
+                    <values title="">fecha manual</values>
+                    <values title="">------</values>
+                    <values title="día">+1day</values>
+                    <values title="2 días">+2days</values>
+                    <values title="3 días">+3days</values>
+                    <values title="4 días">+4days</values>
+                    <values title="5 días">+5days</values>
+                    <values title="6 días">+6days</values>
+                    <values title="7 días">+7days</values>
+                    <values title="10 días">+10days</values>
+                    <values title="15 días">+15days</values>
+                    <values title="mes">+1month</values>
+                    <values title="2 meses">+2months</values>
+                    <values title="3 meses">+3months</values>
+                    <values title="6 meses">+6months</values>
+                    <values title="12 meses">+12months</values>
+                </widget>
+            </column>
+
+            <column numcolumns="2" name="Siguiente servicio" order="107">
+                <widget type="date" fieldname="fsiguiente_servicio" />
+            </column>
+
+        </group>
+
+        <group name="data-observaciones" numcolumns="12">
+
+            <column numcolumns="12" name="Contrato suspendido" order="107">
+                <widget type="checkbox" fieldname="suspendido" />
+            </column>
+
+            <column numcolumns="12" name="Observaciones" order="107">
+                <widget type="textarea" fieldname="observaciones" />
+            </column>
+        </group>
+    </columns>
+</view>

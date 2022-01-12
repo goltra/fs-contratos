@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view>
+    <columns>
+        <column name="Id" order="100">
+            <widget type="text" fieldname="idcontrato" onclick="EditContratoServicio" />
+        </column>
+        <column name="Cliente" order="100">
+            <widget type="select" fieldname="codcliente" required="true">
+                <values source="clientes" fieldcode="codcliente" fieldtitle="nombre" />
+            </widget>
+        </column>
+        <column name="Título" order="100">
+            <widget type="text" fieldname="titulo" />
+        </column>
+        <column name="Observaciones" order="100">
+            <widget type="text" fieldname="observaciones" />
+        </column>
+        <column name="Importe" order="100">
+            <widget type="text" fieldname="importe_anual" />
+        </column>
+        <column name="Alta" order="100">
+            <widget type="text" fieldname="fecha_alta" />
+        </column>
+        <column name="Renovacion" order="100">
+            <widget type="text" fieldname="fecha_renovacion" />
+            <option color='warning'>aaaa</option>
+        </column>
+        <column name="Siguiente servicio" order="100">
+            <widget type="text" fieldname="fsiguiente_servicio" />
+        </column>
+    </columns>
+</view>
