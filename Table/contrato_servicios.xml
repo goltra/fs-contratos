@@ -53,6 +53,10 @@
         <type>boolean</type>
         <default>false</default>
     </column>
+    <column>
+        <name>idfactura</name>
+        <type>character varying(11)</type>
+    </column>
     <constraint>
         <name>contrato_servicios_key</name>
         <type>PRIMARY KEY (idcontrato)</type>

@@ -31,6 +31,12 @@
                 <widget type="number" fieldname="importe_anual" />
             </column>
 
+            <column numcolumns="2" name="Última factura" order="102">
+                <widget type="autocomplete" fieldname="idfactura" onclick="EditFacturaCliente">
+                    <values source="FacturaCliente" fieldcode="idfactura" fieldtitle="codigo" />
+                </widget>
+            </column>
+
             <column numcolumns="2" name="Forma de pago" order="106">
                 <widget type="select" fieldname="codpago" required="true">
                     <values source="formaspago" fieldcode="codpago" fieldtitle="descripcion" />
@@ -39,7 +45,6 @@
 
             <column numcolumns="2" name="Servicio cada:" order="106">
                 <widget type="select" fieldname="periodo" required="true">
-                    <values title="">fecha manual</values>
                     <values title="">------</values>
                     <values title="día">+1day</values>
                     <values title="2 días">+2days</values>

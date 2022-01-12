@@ -29,7 +29,7 @@ class ListContratoServicio extends \FacturaScripts\Core\Lib\ExtendedController\L
         $this->addOrderBy($viewName, ["fecha_renovacion"], "fecha_renovacion");
 
         // filtro general
-        $this->addSearchFields($viewName, ['titulo']);
+        $this->addSearchFields($viewName, ['titulo', 'observaciones']);
 
         // filters
         $this->addFilterAutocomplete($viewName, 'codcliente', 'cliente', 'codcliente', 'clientes', 'codcliente', 'nombre');

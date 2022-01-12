@@ -21,6 +21,7 @@ class ContratoServicio extends ModelClass
     public $fsiguiente_servicio;
     public $titulo;
     public $suspendido;
+    public $idfactura;
 
     public function __construct(array $data = [])
     {
