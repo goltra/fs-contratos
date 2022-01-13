@@ -3,6 +3,7 @@ namespace FacturaScripts\Plugins\GoltratecServicios\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\DataSrc\Impuestos;
+use FacturaScripts\Plugins\GoltratecServicios\Model\ContratoServicio;
 
 class ListContratoServicio extends \FacturaScripts\Core\Lib\ExtendedController\ListController
 {
@@ -13,6 +14,7 @@ class ListContratoServicio extends \FacturaScripts\Core\Lib\ExtendedController\L
         $data["icon"] = "fas fa-search";
         return $data;
     }
+
 
     protected function createViews() {
 
@@ -33,7 +35,11 @@ class ListContratoServicio extends \FacturaScripts\Core\Lib\ExtendedController\L
 
         // filters
         $this->addFilterAutocomplete($viewName, 'codcliente', 'cliente', 'codcliente', 'clientes', 'codcliente', 'nombre');
-        $this->addFilterCheckbox($viewName, 'suspendido', 'suspendido', 'suspendido', '=', true, [new DataBaseWhere('suspendido', 0, '=')]);
+        $this->addFilterSelectWhere($viewName, 'suspendido', [
+            ['label' => 'Activo', 'where' => [new DataBaseWhere('suspendido', true)]],
+            ['label' => 'Suspendido', 'where' => [new DataBaseWhere('suspendido', false)]],
+        ]);
+
     }
 
 }

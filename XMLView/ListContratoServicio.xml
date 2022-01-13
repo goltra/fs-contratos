@@ -23,8 +23,8 @@
         </column>
         <column name="Renovacion" order="100">
             <widget type="text" fieldname="fecha_renovacion" />
-            <option color='warning'>aaaa</option>
         </column>
+
         <column name="Última factura" order="100">
             <widget type="select" fieldname="idfactura" required="true">
                 <values source="FacturaCliente" fieldcode="idfactura" fieldtitle="codigo" />
@@ -33,5 +33,13 @@
         <column name="Siguiente servicio" order="100">
             <widget type="text" fieldname="fsiguiente_servicio" />
         </column>
+
     </columns>
+    <rows>
+        <row type="status">
+            <option color="info" title="Suspendido" fieldname="suspendido">0</option>
+            <option color="warning" title="out-of-stock" fieldname="estado_limite_renovacion">1</option>
+            <option color="danger" title="Ha pasado el plazo" fieldname="estado_limite_renovacion">2</option>
+        </row>
+    </rows>
 </view>

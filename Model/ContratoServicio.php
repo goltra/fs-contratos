@@ -22,6 +22,11 @@ class ContratoServicio extends ModelClass
     public $titulo;
     public $suspendido;
     public $idfactura;
+    public $estado_limite_renovacion;
+
+    CONST ESTADO_LIMITE_RENOVACION_OK = 0;
+    CONST ESTADO_LIMITE_RENOVACION_WARNING = 1;
+    CONST ESTADO_LIMITE_RENOVACION_DANGER = 2;
 
     public function __construct(array $data = [])
     {
@@ -38,6 +43,37 @@ class ContratoServicio extends ModelClass
 
     public static function tableName() {
         return "contrato_servicios";
+    }
+
+    public function all(array $where = [], array $order = [], int $offset = 0, int $limit = 50)
+    {
+        $modelList = parent::all($where, $order, $offset, $limit);
+        $modelListEdited = [];
+
+
+        if(count($modelList) > 0){
+            foreach ($modelList as $v){
+                $v->estado_limite_renovacion = $this->checkLimiteRenovacion(strlen($v->fsiguiente_servicio) > 0 ? $v->fsiguiente_servicio : $v->fecha_renovacion);
+                $modelListEdited[] = $v;
+            }
+            $modelList = $modelListEdited;
+        }
+
+        return  $modelList;
+    }
+
+    private function checkLimiteRenovacion($fecha){
+
+        $fecha = date('Y-m-d', strtotime($fecha));
+
+        if($fecha < date('Y-m-d'))
+            return self::ESTADO_LIMITE_RENOVACION_DANGER;
+
+        if($fecha <= date('Y-m-d', strtotime('+1 month')))
+            return self::ESTADO_LIMITE_RENOVACION_WARNING;
+
+        return self::ESTADO_LIMITE_RENOVACION_OK;
+
     }
 
 //    en codeModelSearch puedes sobrescribir valores de vuelta de un modelo
