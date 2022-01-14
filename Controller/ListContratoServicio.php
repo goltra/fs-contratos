@@ -11,7 +11,7 @@ class ListContratoServicio extends \FacturaScripts\Core\Lib\ExtendedController\L
         $data = parent::getPageData();
         $data["title"] = "Contratos";
         $data["menu"] = "sales";
-        $data["icon"] = "fas fa-search";
+        $data["icon"] = "fas fa-file-signature";
         return $data;
     }
 
