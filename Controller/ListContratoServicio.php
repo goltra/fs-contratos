@@ -3,9 +3,9 @@ namespace FacturaScripts\Plugins\GoltratecServicios\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\DataSrc\Impuestos;
-use FacturaScripts\Plugins\GoltratecServicios\Model\ContratoServicio;
+use FacturaScripts\Core\Lib\ExtendedController\ListController;
 
-class ListContratoServicio extends \FacturaScripts\Core\Lib\ExtendedController\ListController
+class ListContratoServicio extends ListController
 {
     public function getPageData() {
         $data = parent::getPageData();
@@ -35,6 +35,8 @@ class ListContratoServicio extends \FacturaScripts\Core\Lib\ExtendedController\L
 
         // filters
         $this->addFilterAutocomplete($viewName, 'codcliente', 'cliente', 'codcliente', 'clientes', 'codcliente', 'nombre');
+
+        //        Para que nos e vea siempre la sección de filtros abierta
         $this->addFilterSelectWhere($viewName, 'suspendido', [
             ['label' => 'Activo', 'where' => [new DataBaseWhere('suspendido', true)]],
             ['label' => 'Suspendido', 'where' => [new DataBaseWhere('suspendido', false)]],

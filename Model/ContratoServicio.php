@@ -45,6 +45,14 @@ class ContratoServicio extends ModelClass
         return "contrato_servicios";
     }
 
+    /**
+     * Sobrescribimos la función all para agregar el estado del límite de la renovación
+     * @param array $where
+     * @param array $order
+     * @param int $offset
+     * @param int $limit
+     * @return array
+     */
     public function all(array $where = [], array $order = [], int $offset = 0, int $limit = 50)
     {
         $modelList = parent::all($where, $order, $offset, $limit);
@@ -62,6 +70,11 @@ class ContratoServicio extends ModelClass
         return  $modelList;
     }
 
+    /**
+     * Función que comprueba si está en fecha la renovación o no
+     * @param $fecha
+     * @return int
+     */
     private function checkLimiteRenovacion($fecha){
 
         $fecha = date('Y-m-d', strtotime($fecha));
