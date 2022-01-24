@@ -38,8 +38,8 @@ class ListContratoServicio extends ListController
 
         //        Para que nos e vea siempre la sección de filtros abierta
         $this->addFilterSelectWhere($viewName, 'suspendido', [
-            ['label' => 'Activo', 'where' => [new DataBaseWhere('suspendido', true)]],
-            ['label' => 'Suspendido', 'where' => [new DataBaseWhere('suspendido', false)]],
+            ['label' => 'Activo', 'where' => [new DataBaseWhere('suspendido', false)]],
+            ['label' => 'Suspendido', 'where' => [new DataBaseWhere('suspendido', true)]],
         ]);
 
     }
