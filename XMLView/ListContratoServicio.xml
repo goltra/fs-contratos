@@ -39,7 +39,7 @@
         <row type="status">
             <option color="info" title="Suspendido" fieldname="suspendido">1</option>
             <option color="warning" title="Pendiente de renovar" fieldname="estado_limite_renovacion">1</option>
-            <option color="danger" title="Fecha renovación caducada" fieldname="estado_limite_renovacion">2</option>
+            <option color="danger" title="Fecha renovación vencida" fieldname="estado_limite_renovacion">2</option>
         </row>
     </rows>
 </view>
