@@ -1,6 +1,7 @@
 <?php
 namespace FacturaScripts\Plugins\GoltratecServicios\Model;
 
+use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Model\Base\ModelTrait;
 
@@ -23,6 +24,7 @@ class ContratoServicio extends ModelClass
     public $suspendido;
     public $idfactura;
     public $estado_limite_renovacion;
+    public $agrupacion;
 
     CONST ESTADO_LIMITE_RENOVACION_OK = 0;
     CONST ESTADO_LIMITE_RENOVACION_WARNING = 1;
@@ -87,6 +89,23 @@ class ContratoServicio extends ModelClass
 
         return self::ESTADO_LIMITE_RENOVACION_OK;
 
+    }
+
+
+    /**
+     * Devuelve las agrupaciones
+     * @return array
+     */
+    static function getAgrupacionToDropDown(){
+        $dataBase = new DataBase();
+        $agrupaciones = $dataBase->select('SELECT DISTINCT agrupacion FROM contrato_servicios where agrupacion is not null;');
+        $res = [];
+
+        foreach ($agrupaciones as $a){
+            $res[] = ['code' => $a['agrupacion'], 'description' => $a['agrupacion']];
+        }
+
+        return $res;
     }
 
 //    en codeModelSearch puedes sobrescribir valores de vuelta de un modelo

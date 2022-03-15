@@ -54,6 +54,10 @@
         <default>false</default>
     </column>
     <column>
+        <name>agrupacion</name>
+        <type>character varying(150)</type>
+    </column>
+    <column>
         <name>idfactura</name>
         <type>character varying(11)</type>
     </column>

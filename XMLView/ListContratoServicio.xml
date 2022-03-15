@@ -34,6 +34,10 @@
             <widget type="text" fieldname="fsiguiente_servicio" />
         </column>
 
+        <column name="Agrupación" order="100">
+            <widget type="text" fieldname="agrupacion" />
+        </column>
+
     </columns>
     <rows>
         <row type="status">

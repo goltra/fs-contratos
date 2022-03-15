@@ -67,6 +67,10 @@
                 <widget type="date" fieldname="fsiguiente_servicio" />
             </column>
 
+            <column numcolumns="2" name="Agrupación" order="107">
+                <widget type="text" fieldname="agrupacion" />
+            </column>
+
         </group>
 
         <group name="data-observaciones" numcolumns="12">

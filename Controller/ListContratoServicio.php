@@ -1,9 +1,11 @@
 <?php
 namespace FacturaScripts\Plugins\GoltratecServicios\Controller;
 
+use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\DataSrc\Impuestos;
 use FacturaScripts\Core\Lib\ExtendedController\ListController;
+use FacturaScripts\Plugins\GoltratecServicios\Model\ContratoServicio;
 
 class ListContratoServicio extends ListController
 {
@@ -41,6 +43,10 @@ class ListContratoServicio extends ListController
             ['label' => 'Activo', 'where' => [new DataBaseWhere('suspendido', false)]],
             ['label' => 'Suspendido', 'where' => [new DataBaseWhere('suspendido', true)]],
         ]);
+
+
+        $this->addFilterSelect($viewName, 'agrupacion', 'agrupacion', 'agrupacion', ContratoServicio::getAgrupacionToDropDown());
+
 
     }
 
