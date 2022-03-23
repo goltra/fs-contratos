@@ -1,11 +1,11 @@
 <?php
-namespace FacturaScripts\Plugins\GoltratecServicios\Controller;
+namespace FacturaScripts\Plugins\Contratos\Controller;
 
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\DataSrc\Impuestos;
 use FacturaScripts\Core\Lib\ExtendedController\ListController;
-use FacturaScripts\Plugins\GoltratecServicios\Model\ContratoServicio;
+use FacturaScripts\Plugins\Contratos\Model\ContratoServicio;
 
 class ListContratoServicio extends ListController
 {

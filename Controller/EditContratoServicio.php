@@ -1,5 +1,5 @@
 <?php
-namespace FacturaScripts\Plugins\GoltratecServicios\Controller;
+namespace FacturaScripts\Plugins\Contratos\Controller;
 
 class EditContratoServicio extends \FacturaScripts\Core\Lib\ExtendedController\EditController
 {

@@ -1,5 +1,5 @@
 <?php
-namespace FacturaScripts\Plugins\GoltratecServicios\Model;
+namespace FacturaScripts\Plugins\Contratos\Model;
 
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Model\Base\ModelClass;

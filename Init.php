@@ -1,5 +1,5 @@
 <?php
-namespace FacturaScripts\Plugins\GoltratecServicios;
+namespace FacturaScripts\Plugins\Contratos;
 
 class Init extends \FacturaScripts\Core\Base\InitClass
 {
