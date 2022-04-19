@@ -55,7 +55,7 @@ class ContratoServicio extends ModelClass
      * @param int $limit
      * @return array
      */
-    public function all(array $where = [], array $order = [], int $offset = 0, int $limit = 50)
+    public function all(array $where = [], array $order = [], int $offset = 0, int $limit = 50): array
     {
         $modelList = parent::all($where, $order, $offset, $limit);
         $modelListEdited = [];
