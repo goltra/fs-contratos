@@ -46,8 +46,6 @@ class ListContratoServicio extends ListController
 
 
         $this->addFilterSelect($viewName, 'agrupacion', 'agrupacion', 'agrupacion', ContratoServicio::getAgrupacionToDropDown());
-
-
     }
 
 }

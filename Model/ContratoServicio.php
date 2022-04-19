@@ -26,24 +26,33 @@ class ContratoServicio extends ModelClass
     public $estado_limite_renovacion;
     public $agrupacion;
 
-    CONST ESTADO_LIMITE_RENOVACION_OK = 0;
-    CONST ESTADO_LIMITE_RENOVACION_WARNING = 1;
-    CONST ESTADO_LIMITE_RENOVACION_DANGER = 2;
+    const ESTADO_LIMITE_RENOVACION_OK = 0;
+    const ESTADO_LIMITE_RENOVACION_WARNING = 1;
+    const ESTADO_LIMITE_RENOVACION_DANGER = 2;
 
     public function __construct(array $data = [])
     {
         parent::__construct($data);
     }
 
+
     public function clear() {
         parent::clear();
     }
 
-    public static function primaryColumn() {
+    /**
+     * @return string
+     */
+    public static function primaryColumn(): string
+    {
         return "idcontrato";
     }
 
-    public static function tableName() {
+    /**
+     * @return string
+     */
+    public static function tableName(): string
+    {
         return "contrato_servicios";
     }
 
@@ -55,7 +64,7 @@ class ContratoServicio extends ModelClass
      * @param int $limit
      * @return array
      */
-    public function all(array $where = [], array $order = [], int $offset = 0, int $limit = 50)
+    public function all(array $where = [], array $order = [], int $offset = 0, int $limit = 50): array
     {
         $modelList = parent::all($where, $order, $offset, $limit);
         $modelListEdited = [];
@@ -77,7 +86,8 @@ class ContratoServicio extends ModelClass
      * @param $fecha
      * @return int
      */
-    private function checkLimiteRenovacion($fecha){
+    private function checkLimiteRenovacion($fecha): int
+    {
 
         $fecha = date('Y-m-d', strtotime($fecha));
 
@@ -88,7 +98,6 @@ class ContratoServicio extends ModelClass
             return self::ESTADO_LIMITE_RENOVACION_WARNING;
 
         return self::ESTADO_LIMITE_RENOVACION_OK;
-
     }
 
 
@@ -96,7 +105,8 @@ class ContratoServicio extends ModelClass
      * Devuelve las agrupaciones
      * @return array
      */
-    static function getAgrupacionToDropDown(){
+    public static function getAgrupacionToDropDown(): array
+    {
         $dataBase = new DataBase();
         $agrupaciones = $dataBase->select('SELECT DISTINCT agrupacion FROM contrato_servicios where agrupacion is not null;');
         $res = [];
