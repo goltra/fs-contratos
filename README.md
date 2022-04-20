@@ -16,3 +16,7 @@ fechas de vencimientos...
 Cualquier servidor con php 7.2 o superior debe poder correrlo.
 
 Que lo disfruteis!!
+
+# Comprimir plugin para publicarlo
+cd ../
+zip -r Contratos.zip Contratos -x "*/\.*" "*.md"
