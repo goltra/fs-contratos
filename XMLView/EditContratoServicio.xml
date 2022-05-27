@@ -71,6 +71,12 @@
                 <widget type="text" fieldname="agrupacion" />
             </column>
 
+            <column numcolumns="2" name="Producto" order="108">
+                <widget type="autocomplete" fieldname="idproducto" onclick="EditProducto" required="true">
+                    <values source="productos" fieldcode="idproducto" fieldtitle="referencia" />
+                </widget>
+            </column>
+
         </group>
 
         <group name="data-observaciones" numcolumns="12">

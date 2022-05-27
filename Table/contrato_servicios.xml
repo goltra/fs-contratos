@@ -61,6 +61,10 @@
         <name>idfactura</name>
         <type>character varying(11)</type>
     </column>
+    <column>
+        <name>idproducto</name>
+        <type>integer(11)</type>
+    </column>
     <constraint>
         <name>contrato_servicios_key</name>
         <type>PRIMARY KEY (idcontrato)</type>

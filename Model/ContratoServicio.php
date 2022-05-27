@@ -25,6 +25,7 @@ class ContratoServicio extends ModelClass
     public $idfactura;
     public $estado_limite_renovacion;
     public $agrupacion;
+    public $idproducto;
 
     const ESTADO_LIMITE_RENOVACION_OK = 0;
     const ESTADO_LIMITE_RENOVACION_WARNING = 1;
