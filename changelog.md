@@ -1,3 +1,9 @@
+2022-05-27: Versión 1.3
+    
+    Mejoras:
+      * Añadimos productos al contrato
+      * Añadimos posibilidad de renovar
+
 2022-04-19: Version 1.2
 
     Correcciones:
