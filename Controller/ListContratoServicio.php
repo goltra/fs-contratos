@@ -24,6 +24,24 @@ class ListContratoServicio extends ListController
     }
 
 
+    /**
+     * Run the actions that alter data before reading it.
+     *
+     * @param string $action
+     *
+     * @return bool
+     */
+    protected function execPreviousAction($action)
+    {
+        switch ($action) {
+            case 'renew':
+                return $this->renewAction();
+        }
+
+        return parent::execPreviousAction($action);
+    }
+
+
 
     protected function createViewsContratoServicio($viewName = "ListContratoServicio")
     {
@@ -46,6 +64,50 @@ class ListContratoServicio extends ListController
 
 
         $this->addFilterSelect($viewName, 'agrupacion', 'agrupacion', 'agrupacion', ContratoServicio::getAgrupacionToDropDown());
+
+        $this->addRenewButton($viewName);
+    }
+
+
+    /**
+     * Add an modal button for renumber entries
+     *
+     * @param string $viewName
+     */
+    protected function addRenewButton(string $viewName)
+    {
+        $this->addButton($viewName, [
+            'action' => 'renew',
+            'icon' => 'fas fa-plus',
+            'label' => 'Renovar',
+            'type' => 'modal',
+        ]);
+    }
+
+
+    /**
+     * @return bool
+     */
+    protected function renewAction(): bool
+    {
+
+        $codes = explode(',', $this->request->request->get('code'));
+
+        if (false === is_array($codes)) {
+            $this->toolBox()->i18nLog()->warning('no-selected-item');
+            return true;
+        }
+
+        $date = $this->request->request->get('date');
+        $res = [];
+
+        foreach ($codes as $code){
+            $res[$code] = ContratoServicio::renewService($code, $date);
+        }
+
+        $this->redirect('RenewContratoServicio?'.http_build_query(array('params' => $res)));
+
+        return true;
     }
 
 }

@@ -89,5 +89,15 @@
                 <widget type="textarea" fieldname="observaciones" />
             </column>
         </group>
+
+        <modals>
+            <group name="renovar" title="Renovar Contrato" icon="fas fa-sort-numeric-down">
+                <column name="fecha">
+                    <widget type="date" fieldname="fecha"/>
+                </column>
+            </group>
+        </modals>
     </columns>
+
+
 </view>

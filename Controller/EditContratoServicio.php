@@ -52,9 +52,8 @@ class EditContratoServicio extends EditController
             $this->addButton('EditContratoServicio', [
                 'action' => 'renovar',
                 'icon' => 'fas fa-plus',
-                'label' => 'Renovar contrato',
-                'type' => 'action',
-                'confirm' => 'true',
+                'label' => 'Renovar',
+                'type' => 'modal',
             ]);
 
         parent::execAfterAction($action);
@@ -66,100 +65,16 @@ class EditContratoServicio extends EditController
      */
     private function renovarServicio()
     {
-        $contrato = new ContratoServicio();
-        $contrato->loadFromCode($this->request->query->get('code'));
 
         if (!$this->request->query->get('code')){
-            $this->Toolbox()->log()->error('Error al generar la factura, no tenemos contrato.');
+            $this->Toolbox()->log()->error('No hay contrato para renovar.');
             return;
         }
 
-        if (strlen($contrato->codcliente) === 0 || strlen($contrato->idproducto) === 0){
-            $this->Toolbox()->log()->error('Error al generar la factura, cliente o producto no vinculado al contrato.');
-            return;
-        }
-
-        $factura = new FacturaCliente();
-
-        $database = new DataBase();
-        $database->beginTransaction();
-
-        $cliente = new Cliente();
-        $cliente->loadFromCode($contrato->codcliente);
-        $factura->setSubject($cliente);
-
-        if (strlen($contrato->codpago) > 0)
-            $factura->codpago = $contrato->codpago;
+        $date = $this->request->request->get('date');
 
 
-        if ($factura->save()){
-            $linea = $factura->getNewLine();
-            $producto = new Producto();
-            $producto->loadFromCode($contrato->idproducto);
-
-            $linea->idproducto = $producto->idproducto;
-            $linea->idfactura = $factura->idfactura;
-            $linea->descripcion = $producto->descripcion;
-            $linea->referencia = $producto->referencia;
-            $linea->cantidad = 1;
-            $linea->pvpunitario = $contrato->importe_anual > 0 ? $contrato->importe_anual : $producto->precio;
-            $linea->pvptotal = $contrato->importe_anual > 0 ? $contrato->importe_anual : $producto->precio;
-            $linea->codimpuesto = $producto->getTax()->codimpuesto;
-
-            if (!$linea->save()){
-                $this->Toolbox()->log()->error('Error al generar la factura, la linea no es correcta.');
-                $database->rollback();
-                return;
-            }
-
-
-            // recalculo los totales
-            $tool = new BusinessDocumentTools();
-            $tool->recalculate($factura);
-
-            $generator = new InvoiceToAccounting();
-            $generator->generate($factura);
-
-            if (empty($factura->idasiento) || !$factura->save()) {
-                $database->rollback();
-                return;
-            }
-
-            $database->commit();
-            $this->Toolbox()->log()->info('Factura creada correctamente');
-
-
-            $fecha = null;
-
-            if ($contrato->periodo !== '------'){
-                if (strlen($contrato->fecha_renovacion) > 0){
-                    $fecha = date('Y-m-d', strtotime(PeriodTools::applyFormatToDate($contrato->periodo, 'd-m-Y', $contrato->fecha_renovacion)));
-                    $contrato->fecha_renovacion = $fecha;
-                }
-
-                if (strlen($contrato->fsiguiente_servicio) > 0){
-                    $fecha = date('Y-m-d', strtotime(PeriodTools::applyFormatToDate($contrato->periodo, 'd-m-Y', $contrato->fsiguiente_servicio)));
-                    $contrato->fsiguiente_servicio = $fecha;
-                }
-            }
-            else
-                $this->Toolbox()->log()->warning('Contrato no actualizado porque no hay periodicidad');
-
-
-            $contrato->idfactura = $factura->idfactura;
-
-            if ($contrato->save())
-                $this->Toolbox()->log()->info('Contrato actualizado renovado hasta '.date('d/m/Y', strtotime($fecha)));
-            else
-                $this->Toolbox()->log()->error('Error al actualizar el contrato');
-
-
-        }
-        else {
-            $database->rollback();
-            $this->Toolbox()->log()->error('Error al generar la factura');
-
-        }
+        $res = ContratoServicio::renewService($this->request->query->get('code'), $date);
     }
 
 }
