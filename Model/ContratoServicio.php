@@ -32,6 +32,7 @@ class ContratoServicio extends ModelClass
     public $estado_limite_renovacion;
     public $agrupacion;
     public $idproducto;
+    public $producto_descripcion;
 
     const ESTADO_LIMITE_RENOVACION_OK = 0;
     const ESTADO_LIMITE_RENOVACION_WARNING = 1;
@@ -140,9 +141,22 @@ class ContratoServicio extends ModelClass
         $contrato = new ContratoServicio();
         $contrato->loadFromCode($code);
 
-        if (strlen($contrato->codcliente) === 0 || strlen($contrato->idproducto) === 0){
-            return ['status' => 'error', 'message' => 'Error al generar la factura, cliente o producto no vinculado al contrato.'];
-        }
+        if (strlen($contrato->codcliente) === 0)
+            return ['status' => 'error', 'message' => 'Error al generar la factura, cliente no vinculado al contrato.'];
+
+        if (strlen($contrato->idproducto) === 0)
+            return ['status' => 'error', 'message' => 'Error al generar la factura, producto no vinculado al contrato.'];
+
+        if (strlen($contrato->periodo) === 0)
+            return ['status' => 'error', 'message' => 'Error al generar la factura, no se ha establecido un periodo de renovación.'];
+
+        if (strlen($contrato->fecha_renovacion) === 0)
+            return ['status' => 'error', 'message' => 'Error al generar la factura, no se ha establecido una fecha de renovación.'];
+
+
+        $fechaAnterior = $contrato->fecha_renovacion;
+        $fechaRenovacion = date('Y-m-d', strtotime(PeriodTools::applyFormatToDate($contrato->periodo, 'd-m-Y', $fechaAnterior)));
+
 
         $factura = new FacturaCliente();
 
@@ -166,7 +180,7 @@ class ContratoServicio extends ModelClass
             $linea->idproducto = $producto->idproducto;
             $linea->idfactura = $factura->idfactura;
             $linea->referencia = $producto->referencia;
-            $linea->descripcion = $producto->descripcion;
+            $linea->descripcion = (strlen($contrato->producto_descripcion) > 0 ? $contrato->producto_descripcion : $producto->descripcion) . ' - desde '.$fechaAnterior. ' a '.$fechaRenovacion;
             $linea->cantidad = 1;
             $linea->pvpunitario = $contrato->importe_anual > 0 ? $contrato->importe_anual : $producto->precio;
             $linea->pvptotal = $contrato->importe_anual > 0 ? $contrato->importe_anual : $producto->precio;
@@ -192,31 +206,12 @@ class ContratoServicio extends ModelClass
             /*
              * Actualizamos el contrato una vez la factura ha sido guardada
              */
-
-            $fecha = null;
-
-            if ($contrato->periodo !== '------'){
-                if (strlen($contrato->fecha_renovacion) > 0){
-                    $fecha = date('Y-m-d', strtotime(PeriodTools::applyFormatToDate($contrato->periodo, 'd-m-Y', $contrato->fecha_renovacion)));
-                    $contrato->fecha_renovacion = $fecha;
-                }
-
-                if (strlen($contrato->fsiguiente_servicio) > 0){
-                    $fecha = date('Y-m-d', strtotime(PeriodTools::applyFormatToDate($contrato->periodo, 'd-m-Y', $contrato->fsiguiente_servicio)));
-                    $contrato->fsiguiente_servicio = $fecha;
-                }
-            }
-            else{
-                $database->rollback();
-                //  todo preguntar a Fran si este caso es factible o si forzamos a que tenga que estar.
-                return ['status' => 'info', 'message' => 'La factura ha sido generada, pero el contrato no se ha actualizado porque no hay periodicidad'];
-            }
-
             $contrato->idfactura = $factura->idfactura;
+            $contrato->fecha_renovacion = $fechaRenovacion;
 
             if ($contrato->save()){
                 $database->commit();
-                return ['status' => 'ok', 'message' => 'Contrato renovado hasta el '.date('d/m/Y', strtotime($fecha))];
+                return ['status' => 'ok', 'message' => 'Contrato renovado hasta el '.date('d/m/Y', strtotime($fechaRenovacion))];
             }
             else{
                 $database->rollback();

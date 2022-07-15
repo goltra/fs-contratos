@@ -41,7 +41,7 @@
     </columns>
 
     <modals>
-        <group name="renew" title="Renovar Contrato" icon="fas fa-calendar-alt">
+        <group name="renew" title="Renovar Contrato y generar factura" icon="fas fa-calendar-alt">
             <column name="Fecha para la factura">
                 <widget type="date" fieldname="date" />
             </column>

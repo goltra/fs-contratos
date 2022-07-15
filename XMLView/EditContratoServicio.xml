@@ -77,6 +77,10 @@
                 </widget>
             </column>
 
+            <column numcolumns="4" name="Descripción del producto para la factura" order="109">
+                <widget type="text" fieldname="producto_descripcion" />
+            </column>
+
         </group>
 
         <group name="data-observaciones" numcolumns="12">
@@ -93,12 +97,17 @@
     </columns>
 
     <modals>
-        <group name="renew" title="Renovar Contrato" icon="fas fa-calendar-alt">
+        <group name="renew" title="Renovar Contrato y generar factura" icon="fas fa-calendar-alt">
             <column name="Fecha para la factura">
                 <widget type="date" fieldname="date" />
             </column>
         </group>
     </modals>
 
+    <rows>
+        <row type="footer">
+            <group name="test" html="EditContratoServicioInfo.html.twig"></group>
+        </row>
+    </rows>
 
 </view>
