@@ -1,28 +1,24 @@
 <div class="col-12 text-secondary" style="font-size: smaller">
     <div class="row text-info">
-        <div class="col-12"><h4>Como renovar el contrato y generar la factura</h4></div>
+        <div class="col-12"><h4>Campos que intervienen a la hora de renovar el contrato y generar la factura</h4></div>
     </div>
     <div class="row">
-        <div class="col-12">
-            <p>Campos que intervienen:</p>
-        </div>
         <div class="col-6">
             <p><b>Campos requeridos de no establecerlos dará error:</b></p>
-            <div><b>Cliente:</b> Es requerido, en caso de no establecerlo dará error.</div>
-            <div><b>Renovación</b> Fecha de la última renovación. Una vez renovado, se actualizará a la siguiente fecha.</div>
-            <div><b>Servicio cada:</b> Es requerido para poder saber cuando será la próxima renovación</div>
-            <div><b>Producto</b> Es requerido, en caso de no establecerlo dará error</div>
+            <ul>
+                <li><b>Cliente:</b> Cliente al que va dirigida la factura.</li>
+                <li><b>Renovación</b> Es necesaria para calcular la nueva fecha de vencimiento, se actualizará a la siguiente fecha.</li>
+                <li><b>Servicio cada:</b> Es necesario para establecer el nuevo vencimiento</li>
+                <li><b>Producto</b> Es necesario para agregar el producto a la linea de la factura</li>
+            </ul>
         </div>
         <div class="col-6">
             <p><b>Campos opcionales:</b></p>
-            <div><b>Forma de pago</b> Si no se establece una, se cogerá el precio del producto asociado</div>
-            <div><b>Importe</b> Si no se establece uno, se cogerá el precio del producto asociado</div>
-            <div><b>Descripción del producto:</b> Si no se establece una, se cogerá la del producto asociado</div>
-        </div>
-        <div class="col-12">
-            <br />
-            <p>Para renovar el contrato y generar la factura, sólo es necesario pichar sobre el botón de renovar, establecer la fecha para la factura y automáticamente se generará la factura. <br />
-            Actualizando la fecha de renovación del contrato y la última factura por la actual. </p>
+            <ul>
+                <li><b>Forma de pago</b> Si no se establece una, se cogerá el precio del producto asociado</li>
+                <li><b>Importe</b> Si no se establece uno, se cogerá el precio del producto asociado</li>
+                <li><b>Descripción del producto:</b> Si no se establece una, se cogerá la del producto asociado</li>
+            </ul>
         </div>
     </div>
 </div>
