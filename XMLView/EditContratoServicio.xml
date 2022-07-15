@@ -90,14 +90,15 @@
             </column>
         </group>
 
-        <modals>
-            <group name="renovar" title="Renovar Contrato" icon="fas fa-sort-numeric-down">
-                <column name="fecha">
-                    <widget type="date" fieldname="fecha"/>
-                </column>
-            </group>
-        </modals>
     </columns>
+
+    <modals>
+        <group name="renew" title="Renovar Contrato" icon="fas fa-calendar-alt">
+            <column name="Fecha para la factura">
+                <widget type="date" fieldname="date" />
+            </column>
+        </group>
+    </modals>
 
 
 </view>

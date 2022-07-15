@@ -1,0 +1,56 @@
+{% extends 'Master/MenuTemplate.html.twig' %}
+{% set currentView = fsc.getCurrentView() %}
+
+{% block bodyHeaderOptions %}
+    {{ parent() }}
+    <div class="container-fluid mb-2">
+        <div class="row">
+            <div class="col-md col-8 mb-2">
+                <h1 class="h2">Resultado de la renovación de contratos</h1>
+                <h3 class="h6">Cada contrato tiene un enlace para poder ir al detalle del mismo.</h3>
+            </div>
+            <div class="col-md d-none d-md-inline-block text-right">
+                <h1 class="h4 mb-0 d-none d-md-inline-block">
+                    Contratos<i class="fas fa-file-signature ml-3" aria-hidden="true"></i>
+                </h1>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+<div class="mt-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="import-result-wrapper">
+
+                    {% if fsc.noRenovados|length > 0 %}
+                        <i class="fas fa-exclamation-triangle fa-6x mt-3 mb-4"></i>
+                    {% else %}
+                        <i class="fas fa-thumbs-up  fa-6x my-5"></i>
+                    {% endif %}
+
+                    <h3 class="mb-5">Resultado de la renovación</h3>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="ok"><span class="text-success ">{{ fsc.renovados|length }}</span>Contratos renovados:</p>
+                            {% for c in fsc.renovados %}
+                                <a href="{{ asset('EditContratoServicio') }}?code={{ c.idcontrato }}" target="_blank">{{ c.idcontrato }} - {{ c.message }}</a>
+                            {% endfor %}
+                        </div>
+                        <div class="col-6">
+                            <p class="error"><span class="text-danger ">{{ fsc.noRenovados|length }}</span>Contratos han dado error:</p>
+                            {% for c in fsc.noRenovados %}
+                                <a href="{{ asset('EditContratoServicio') }}?code={{ c.idcontrato }}" target="_blank">{{ c.idcontrato }} - {{ c.message }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

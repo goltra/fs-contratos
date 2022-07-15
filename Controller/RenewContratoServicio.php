@@ -1,18 +1,21 @@
 <?php
-namespace FacturaScripts\Plugins\MyNewPlugin\Controller;
+namespace FacturaScripts\Plugins\Contratos\Controller;
 
 use FacturaScripts\Core\Base\Controller;
 
 class RenewContratoServicio extends Controller {
 
+    public $renovados = [];
+    public $noRenovados = [];
+
     public function getPageData(): array
     {
-        $pageData = parent::getPageData();
+        $data = parent::getPageData();
         $data["title"] = "Contratos";
         $data["menu"] = "sales";
         $data["icon"] = "fas fa-file-signature";
         $data["showonmenu"] = false;
-        return $pageData;
+        return $data;
     }
 
     public function privateCore(&$response, $user, $permissions)
@@ -22,10 +25,10 @@ class RenewContratoServicio extends Controller {
     }
 
     private function init(){
-        $res = $this->request->request->get('res');
-        parse_str($res, $output);
+        $res = $this->request->query->get('params');
 
-        var_dump($output);
+        $this->renovados = array_filter($res, function ($c){ return $c['status'] === 'ok'; });
+        $this->noRenovados = array_filter($res, function ($c){ return $c['status'] === 'error'; });
 
     }
 }

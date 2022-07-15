@@ -79,8 +79,9 @@ class ListContratoServicio extends ListController
         $this->addButton($viewName, [
             'action' => 'renew',
             'icon' => 'fas fa-plus',
-            'label' => 'Renovar',
+            'label' => 'Renovar y generar factura',
             'type' => 'modal',
+            'color' => 'info'
         ]);
     }
 
@@ -90,6 +91,15 @@ class ListContratoServicio extends ListController
      */
     protected function renewAction(): bool
     {
+        if (!$this->request->request->get('code')){
+            $this->Toolbox()->log()->error('No hay contrato para renovar.');
+            return true;
+        }
+
+        if (!$this->request->request->get('date')){
+            $this->Toolbox()->log()->error('No has seleccionado una fecha para la factura');
+            return true;
+        }
 
         $codes = explode(',', $this->request->request->get('code'));
 
@@ -98,16 +108,15 @@ class ListContratoServicio extends ListController
             return true;
         }
 
-        $date = $this->request->request->get('date');
         $res = [];
 
-        foreach ($codes as $code){
-            $res[$code] = ContratoServicio::renewService($code, $date);
-        }
+        foreach ($codes as $code)
+            $res[$code] = array_merge(ContratoServicio::renewService($code, $this->request->request->get('date')), ['idcontrato' => $code]);
 
         $this->redirect('RenewContratoServicio?'.http_build_query(array('params' => $res)));
 
         return true;
+
     }
 
 }

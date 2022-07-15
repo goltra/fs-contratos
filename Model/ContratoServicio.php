@@ -126,8 +126,16 @@ class ContratoServicio extends ModelClass
     }
 
 
-
-    static function renewService($code, $date){
+    /**
+     * Renueva un contrato
+     * 1 - Genera la factura
+     * 2 - Actualiza el contrato
+     * @param $code
+     * @param $date
+     * @return string[]
+     */
+    static function renewService($code, $date): array
+    {
 
         $contrato = new ContratoServicio();
         $contrato->loadFromCode($code);
@@ -144,6 +152,7 @@ class ContratoServicio extends ModelClass
         $cliente = new Cliente();
         $cliente->loadFromCode($contrato->codcliente);
         $factura->setSubject($cliente);
+        $factura->fecha = $date;
 
         if (strlen($contrato->codpago) > 0)
             $factura->codpago = $contrato->codpago;
@@ -156,8 +165,8 @@ class ContratoServicio extends ModelClass
 
             $linea->idproducto = $producto->idproducto;
             $linea->idfactura = $factura->idfactura;
-            $linea->descripcion = $producto->descripcion;
             $linea->referencia = $producto->referencia;
+            $linea->descripcion = $producto->descripcion;
             $linea->cantidad = 1;
             $linea->pvpunitario = $contrato->importe_anual > 0 ? $contrato->importe_anual : $producto->precio;
             $linea->pvptotal = $contrato->importe_anual > 0 ? $contrato->importe_anual : $producto->precio;
@@ -167,7 +176,6 @@ class ContratoServicio extends ModelClass
                 $database->rollback();
                 return ['status' => 'error', 'message' => 'Error al generar la factura, la linea no es correcta.'];
             }
-
 
             // recalculo los totales
             $tool = new BusinessDocumentTools();
@@ -180,8 +188,6 @@ class ContratoServicio extends ModelClass
                 $database->rollback();
                 return ['status' => 'error', 'message' => 'Error al guardar el asiento contable.'];
             }
-
-            $database->commit();
 
             /*
              * Actualizamos el contrato una vez la factura ha sido guardada
@@ -200,17 +206,22 @@ class ContratoServicio extends ModelClass
                     $contrato->fsiguiente_servicio = $fecha;
                 }
             }
-            else
+            else{
+                $database->rollback();
                 //  todo preguntar a Fran si este caso es factible o si forzamos a que tenga que estar.
                 return ['status' => 'info', 'message' => 'La factura ha sido generada, pero el contrato no se ha actualizado porque no hay periodicidad'];
-
+            }
 
             $contrato->idfactura = $factura->idfactura;
 
-            if ($contrato->save())
-                return ['status' => 'ok', 'message' => 'Contrato actualizado renovado hasta '.date('d/m/Y', strtotime($fecha))];
-            else
+            if ($contrato->save()){
+                $database->commit();
+                return ['status' => 'ok', 'message' => 'Contrato renovado hasta el '.date('d/m/Y', strtotime($fecha))];
+            }
+            else{
+                $database->rollback();
                 return ['status' => 'error', 'message' => 'Error al actualizar el contrato'];
+            }
         }
         else {
             $database->rollback();

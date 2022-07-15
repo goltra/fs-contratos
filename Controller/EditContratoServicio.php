@@ -1,14 +1,7 @@
 <?php
 namespace FacturaScripts\Plugins\Contratos\Controller;
 
-use FacturaScripts\Core\Base\DataBase;
-use FacturaScripts\Core\Lib\BusinessDocumentTools;
 use FacturaScripts\Core\Lib\ExtendedController\EditController;
-use FacturaScripts\Core\Lib\ListFilter\PeriodTools;
-use FacturaScripts\Core\Model\Producto;
-use FacturaScripts\Dinamic\Lib\Accounting\InvoiceToAccounting;
-use FacturaScripts\Dinamic\Model\Cliente;
-use FacturaScripts\Dinamic\Model\FacturaCliente;
 use FacturaScripts\Plugins\Contratos\Model\ContratoServicio;
 
 class EditContratoServicio extends EditController
@@ -35,8 +28,8 @@ class EditContratoServicio extends EditController
 
     protected function execPreviousAction($action)
     {
-        if ($action === 'renovar'){
-            $this->renovarServicio();
+        if ($action === 'renew'){
+            $this->renewAction();
             return true;
         }
 
@@ -50,10 +43,11 @@ class EditContratoServicio extends EditController
 
         if (isset($contrato->suspendido) && $contrato->suspendido === false )
             $this->addButton('EditContratoServicio', [
-                'action' => 'renovar',
+                'action' => 'renew',
                 'icon' => 'fas fa-plus',
-                'label' => 'Renovar',
+                'label' => 'Renovar y generar factura',
                 'type' => 'modal',
+                'color' => 'info'
             ]);
 
         parent::execAfterAction($action);
@@ -63,7 +57,7 @@ class EditContratoServicio extends EditController
     /**
      * Función para renovar el servicio, crea la factura y actualiza el contrato.
      */
-    private function renovarServicio()
+    private function renewAction()
     {
 
         if (!$this->request->query->get('code')){
@@ -71,10 +65,22 @@ class EditContratoServicio extends EditController
             return;
         }
 
-        $date = $this->request->request->get('date');
+        if (!$this->request->request->get('date')){
+            $this->Toolbox()->log()->error('No has seleccionado una fecha para la factura');
+            return;
+        }
 
+        $res = ContratoServicio::renewService($this->request->query->get('code'), $this->request->request->get('date'));
 
-        $res = ContratoServicio::renewService($this->request->query->get('code'), $date);
+        switch ($res['status']){
+            case 'error':
+                $this->Toolbox()->log()->error($res['message']);
+                break;
+
+            case 'ok':
+                $this->Toolbox()->log()->notice($res['message']);
+                break;
+        }
     }
 
 }
