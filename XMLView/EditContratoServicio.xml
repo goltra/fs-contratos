@@ -73,7 +73,7 @@
 
             <column numcolumns="2" name="Producto" order="108">
                 <widget type="autocomplete" fieldname="idproducto" onclick="EditProducto" required="true">
-                    <values source="productos" fieldcode="idproducto" fieldtitle="referencia" />
+                    <values source="productos" fieldcode="idproducto" fieldtitle="descripcion" />
                 </widget>
             </column>
 

@@ -180,7 +180,7 @@ class ContratoServicio extends ModelClass
             $linea->idproducto = $producto->idproducto;
             $linea->idfactura = $factura->idfactura;
             $linea->referencia = $producto->referencia;
-            $linea->descripcion = (strlen($contrato->producto_descripcion) > 0 ? $contrato->producto_descripcion : $producto->descripcion) . ' - desde '.$fechaAnterior. ' a '.$fechaRenovacion;
+            $linea->descripcion = (strlen($contrato->producto_descripcion) > 0 ? $contrato->producto_descripcion : $producto->descripcion) . ' - desde el '.$fechaAnterior. ' al '.date('d-m-Y', strtotime($fechaRenovacion));
             $linea->cantidad = 1;
             $linea->pvpunitario = $contrato->importe_anual > 0 ? $contrato->importe_anual : $producto->precio;
             $linea->pvptotal = $contrato->importe_anual > 0 ? $contrato->importe_anual : $producto->precio;

@@ -15,7 +15,7 @@ class EditContratoServicio extends EditController
     public function getPageData(): array
     {
         $data = parent::getPageData();
-        $data["title"] = "ContratoServicio";
+        $data["title"] = "Contrato";
         $data["icon"] = "fas fa-search";
         return $data;
     }
