@@ -147,7 +147,8 @@ class ContratoServicio extends ModelClass
         if (strlen($contrato->idproducto) === 0)
             return ['status' => 'error', 'message' => 'Error al generar la factura, producto no vinculado al contrato.'];
 
-        if (strlen($contrato->periodo) === 0)
+
+        if ($contrato->periodo === '------')
             return ['status' => 'error', 'message' => 'Error al generar la factura, no se ha establecido un periodo de renovación.'];
 
         if (strlen($contrato->fecha_renovacion) === 0)
