@@ -1,6 +1,7 @@
 <?php
 namespace FacturaScripts\Plugins\Contratos\Model;
 
+use Exception;
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Lib\BusinessDocumentTools;
 use FacturaScripts\Core\Lib\ListFilter\PeriodTools;
@@ -38,15 +39,6 @@ class ContratoServicio extends ModelClass
     const ESTADO_LIMITE_RENOVACION_WARNING = 1;
     const ESTADO_LIMITE_RENOVACION_DANGER = 2;
 
-    public function __construct(array $data = [])
-    {
-        parent::__construct($data);
-    }
-
-
-    public function clear() {
-        parent::clear();
-    }
 
     /**
      * @return string
@@ -116,7 +108,7 @@ class ContratoServicio extends ModelClass
     public static function getAgrupacionToDropDown(): array
     {
         $dataBase = new DataBase();
-        $agrupaciones = $dataBase->select('SELECT DISTINCT agrupacion FROM contrato_servicios where agrupacion is not null;');
+        $agrupaciones = $dataBase->select("SELECT DISTINCT agrupacion FROM contrato_servicios where agrupacion is not null;");
         $res = [];
 
         foreach ($agrupaciones as $a){
@@ -128,69 +120,106 @@ class ContratoServicio extends ModelClass
 
 
     /**
+     * Comprueba las reglas para poder renovar el contrato. En caso de haber error, se muestra tantas notificaciones como errores.
+     * @return bool
+     */
+    public function hasErrorsToRenew(): bool
+    {
+        $error = false;
+
+        if (strlen($this->codcliente) === 0){
+            $this->Toolbox()->log()->error('Error al comprobar el contrato '.$this->titulo.', no hay un cliente vinculado.');
+            $error = true;
+        }
+
+        if (strlen($this->idproducto) === 0){
+            $this->Toolbox()->log()->error('Error al comprobar el contrato '.$this->titulo.', no hay un producto vinculado.');
+            $error = true;
+        }
+
+        if ($this->periodo === '------'){
+            $this->Toolbox()->log()->error('Error al comprobar el contrato '.$this->titulo.', no se ha establecido un periodo de renovación.');
+            $error = true;
+        }
+
+        if (strlen($this->fecha_renovacion) === 0){
+            $this->Toolbox()->log()->error('Error al comprobar el contrato '.$this->titulo.', no se ha establecido una fecha de renovación');
+            $error = true;
+        }
+
+        return $error;
+    }
+
+
+    /**
      * Renueva un contrato
      * 1 - Genera la factura
      * 2 - Actualiza el contrato
-     * @param $code
-     * @param $date
-     * @return string[]
+     * @param string $invoiceDate
+     * @param FacturaCliente|null $factura
+     * @return array
+     *
      */
-    static function renewService($code, $date): array
+    public function renewService(string $invoiceDate, FacturaCliente $factura = null): array
     {
 
-        $contrato = new ContratoServicio();
-        $contrato->loadFromCode($code);
-
-        if (strlen($contrato->codcliente) === 0)
-            return ['status' => 'error', 'message' => 'Error al generar la factura, cliente no vinculado al contrato.'];
-
-        if (strlen($contrato->idproducto) === 0)
-            return ['status' => 'error', 'message' => 'Error al generar la factura, producto no vinculado al contrato.'];
-
-
-        if ($contrato->periodo === '------')
-            return ['status' => 'error', 'message' => 'Error al generar la factura, no se ha establecido un periodo de renovación.'];
-
-        if (strlen($contrato->fecha_renovacion) === 0)
-            return ['status' => 'error', 'message' => 'Error al generar la factura, no se ha establecido una fecha de renovación.'];
-
-
-        $fechaAnterior = $contrato->fecha_renovacion;
-        $fechaRenovacion = date('Y-m-d', strtotime(PeriodTools::applyFormatToDate($contrato->periodo, 'd-m-Y', $fechaAnterior)));
-
-
-        $factura = new FacturaCliente();
+        $renovationDate = date('Y-m-d', strtotime(PeriodTools::applyFormatToDate($this->periodo, 'd-m-Y', $this->fecha_renovacion)));
 
         $database = new DataBase();
         $database->beginTransaction();
 
+        if ($factura === null){
+            try {
+                $factura = $this->generateInvoice($invoiceDate, $renovationDate);
+            }
+            catch (Exception $e){
+                $database->rollback();
+                return ['status' => 'error', 'message' => $e->getMessage()];
+            }
+        }
+        else
+            $this->addLineToInvoice($factura->idfactura, $renovationDate);
+
+        /*
+         * Actualizamos el contrato una vez la factura ha sido guardada
+         */
+        $this->idfactura = $factura->idfactura;
+        $this->fecha_renovacion = $renovationDate;
+
+        if ($this->save()){
+            $database->commit();
+            return ['status' => 'ok', 'message' => 'Contrato renovado hasta el '.date('d/m/Y', strtotime($renovationDate)), 'codcliente' => $factura->codcliente, 'idfactura' => $factura->idfactura];
+        }
+        else{
+            $database->rollback();
+            return ['status' => 'error', 'message' => 'Error al actualizar el contrato'];
+        }
+
+    }
+
+    /**
+     * Genera el contrato
+     * @param string $invoiceDate
+     * @param string $renovationDate
+     * @return FacturaCliente
+     * @throws Exception
+     */
+    public function generateInvoice(string $invoiceDate, string $renovationDate): FacturaCliente
+    {
+        $factura = new FacturaCliente();
+
         $cliente = new Cliente();
-        $cliente->loadFromCode($contrato->codcliente);
+        $cliente->loadFromCode($this->codcliente);
         $factura->setSubject($cliente);
-        $factura->fecha = $date;
+        $factura->fecha = $invoiceDate;
 
-        if (strlen($contrato->codpago) > 0)
-            $factura->codpago = $contrato->codpago;
-
+        if (strlen($this->codpago) > 0)
+            $factura->codpago = $this->codpago;
 
         if ($factura->save()){
-            $linea = $factura->getNewLine();
-            $producto = new Producto();
-            $producto->loadFromCode($contrato->idproducto);
 
-            $linea->idproducto = $producto->idproducto;
-            $linea->idfactura = $factura->idfactura;
-            $linea->referencia = $producto->referencia;
-            $linea->descripcion = (strlen($contrato->producto_descripcion) > 0 ? $contrato->producto_descripcion : $producto->descripcion) . ' - desde el '.$fechaAnterior. ' al '.date('d-m-Y', strtotime($fechaRenovacion));
-            $linea->cantidad = 1;
-            $linea->pvpunitario = $contrato->importe_anual > 0 ? $contrato->importe_anual : $producto->precio;
-            $linea->pvptotal = $contrato->importe_anual > 0 ? $contrato->importe_anual : $producto->precio;
-            $linea->codimpuesto = $producto->getTax()->codimpuesto;
-
-            if (!$linea->save()){
-                $database->rollback();
-                return ['status' => 'error', 'message' => 'Error al generar la factura, la linea no es correcta.'];
-            }
+            if (!$this->addLineToInvoice($factura->idfactura, $renovationDate))
+                throw new Exception('Error al generar la factura, la linea no es correcta.');
 
             // recalculo los totales
             $tool = new BusinessDocumentTools();
@@ -199,30 +228,41 @@ class ContratoServicio extends ModelClass
             $generator = new InvoiceToAccounting();
             $generator->generate($factura);
 
-            if (empty($factura->idasiento) || !$factura->save()) {
-                $database->rollback();
-                return ['status' => 'error', 'message' => 'Error al guardar el asiento contable.'];
-            }
+            if (empty($factura->idasiento) || !$factura->save())
+                throw new Exception('Error al guardar el asiento contable.');
 
-            /*
-             * Actualizamos el contrato una vez la factura ha sido guardada
-             */
-            $contrato->idfactura = $factura->idfactura;
-            $contrato->fecha_renovacion = $fechaRenovacion;
+            return $factura;
+        }
+        else
+            throw new Exception('Error al generar la factura.');
+    }
 
-            if ($contrato->save()){
-                $database->commit();
-                return ['status' => 'ok', 'message' => 'Contrato renovado hasta el '.date('d/m/Y', strtotime($fechaRenovacion))];
-            }
-            else{
-                $database->rollback();
-                return ['status' => 'error', 'message' => 'Error al actualizar el contrato'];
-            }
-        }
-        else {
-            $database->rollback();
-            return ['status' => 'error', 'message' => 'Error al generar la factura'];
-        }
+
+    /**
+     * Genera una linea de la factura con los datos del contrato
+     * @param string $idfactura
+     * @param string $renovationDate
+     * @return bool
+     */
+    public function addLineToInvoice(string $idfactura, string $renovationDate): bool
+    {
+        $factura = new FacturaCliente();
+        $factura->loadFromCode($idfactura);
+
+        $linea = $factura->getNewLine();
+        $producto = new Producto();
+        $producto->loadFromCode($this->idproducto);
+
+        $linea->idproducto = $producto->idproducto;
+        $linea->idfactura = $factura->idfactura;
+        $linea->referencia = $producto->referencia;
+        $linea->descripcion = (strlen($this->producto_descripcion) > 0 ? $this->producto_descripcion : $producto->descripcion) . ' - desde el '.$this->fecha_renovacion. ' al '.date('d-m-Y', strtotime($renovationDate));
+        $linea->cantidad = 1;
+        $linea->pvpunitario = $this->importe_anual > 0 ? $this->importe_anual : $producto->precio;
+        $linea->pvptotal = $this->importe_anual > 0 ? $this->importe_anual : $producto->precio;
+        $linea->codimpuesto = $producto->getTax()->codimpuesto;
+
+        return $linea->save();
     }
 
 //    en codeModelSearch puedes sobrescribir valores de vuelta de un modelo

@@ -9,7 +9,7 @@
             </column>
 
             <column numcolumns="3" name="Título" order="101">
-                <widget type="text" fieldname="titulo" />
+                <widget type="text" fieldname="titulo"  required="true"/>
             </column>
 
             <column numcolumns="2" name="Empleado" order="102">
@@ -19,7 +19,7 @@
             </column>
 
             <column numcolumns="2" name="Alta" order="103">
-                <widget type="date" fieldname="fecha_alta" />
+                <widget type="date" fieldname="fecha_alta"  required="true" />
             </column>
 
             <column numcolumns="2" name="Renovación" order="104" required="true">
@@ -72,7 +72,7 @@
             </column>
 
             <column numcolumns="2" name="Producto" order="108">
-                <widget type="autocomplete" fieldname="idproducto" onclick="EditProducto" required="true">
+                <widget type="autocomplete" fieldname="idproducto" onclick="EditProducto">
                     <values source="productos" fieldcode="idproducto" fieldtitle="descripcion" />
                 </widget>
             </column>

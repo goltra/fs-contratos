@@ -5,6 +5,7 @@ use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\DataSrc\Impuestos;
 use FacturaScripts\Core\Lib\ExtendedController\ListController;
+use FacturaScripts\Dinamic\Model\FacturaCliente;
 use FacturaScripts\Plugins\Contratos\Model\ContratoServicio;
 
 class ListContratoServicio extends ListController
@@ -108,10 +109,43 @@ class ListContratoServicio extends ListController
             return true;
         }
 
+        $hasError = false;
+
+        foreach ($codes as $code){
+            $contrato = new ContratoServicio();
+            $contrato->loadFromCode($code);
+
+            if ($contrato->hasErrorsToRenew()){
+                $hasError = true;
+            }
+        }
+
+        if ($hasError){
+            $this->Toolbox()->log()->error('No se ha renovado ningún contrato. Por favor, soluciona las incidencias y vuelve a intentarlo.');
+            return true;
+        }
+
+
+        // comprobamos los codigos por si hay alguno que de error.
         $res = [];
 
-        foreach ($codes as $code)
-            $res[$code] = array_merge(ContratoServicio::renewService($code, $this->request->request->get('date')), ['idcontrato' => $code]);
+        foreach ($codes as $code){
+            $contrato = new ContratoServicio();
+            $contrato->loadFromCode($code);
+            $factura = null;
+
+            if (count($res) > 0){
+                foreach ($res as $r){
+                    if (isset($r['codcliente']) && $r['codcliente'] === $contrato->codcliente && isset($r['idfactura'])){
+                        $factura = new FacturaCliente();
+                        $factura->loadFromCode($r['idfactura']);
+                        break;
+                    }
+                }
+            }
+
+            $res[$code] = array_merge($contrato->renewService($this->request->request->get('date'), $factura), ['idcontrato' => $code]);
+        }
 
         $this->redirect('RenewContratoServicio?'.http_build_query(array('params' => $res)));
 

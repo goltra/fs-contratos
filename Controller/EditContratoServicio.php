@@ -70,7 +70,16 @@ class EditContratoServicio extends EditController
             return;
         }
 
-        $res = ContratoServicio::renewService($this->request->query->get('code'), $this->request->request->get('date'));
+        $contrato = new ContratoServicio();
+        $contrato->loadFromCode($this->request->query->get('code'));
+
+        if ($contrato->hasErrorsToRenew()){
+            $this->Toolbox()->log()->error('No se ha renovado el contrato, por favor soluciona las incidencias y vuelve a intentarlo');
+            return;
+        }
+
+
+        $res = $contrato->renewService($this->request->request->get('date'));
 
         switch ($res['status']){
             case 'error':
