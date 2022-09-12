@@ -2,6 +2,7 @@
 namespace FacturaScripts\Plugins\Contratos\Model;
 
 use Exception;
+use FacturaScripts\Core\Base\Calculator;
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Lib\BusinessDocumentTools;
 use FacturaScripts\Core\Lib\ListFilter\PeriodTools;
@@ -177,8 +178,11 @@ class ContratoServicio extends ModelClass
                 return ['status' => 'error', 'message' => $e->getMessage()];
             }
         }
-        else
+        else{
             $this->addLineToInvoice($factura->idfactura, $renovationDate);
+            $lines = $factura->getLines();
+            Calculator::calculate($factura, $lines, true);
+        }
 
         /*
          * Actualizamos el contrato una vez la factura ha sido guardada
