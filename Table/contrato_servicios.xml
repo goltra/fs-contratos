@@ -54,6 +54,11 @@
         <default>false</default>
     </column>
     <column>
+        <name>mostrar_proxima_renovacion_en_factura</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
+    <column>
         <name>agrupacion</name>
         <type>character varying(150)</type>
     </column>
@@ -67,7 +72,7 @@
     </column>
     <column>
         <name>producto_descripcion</name>
-        <type>character varying(150)</type>
+        <type>text</type>
     </column>
     <constraint>
         <name>contrato_servicios_key</name>

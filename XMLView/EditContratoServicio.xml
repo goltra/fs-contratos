@@ -77,21 +77,26 @@
                 </widget>
             </column>
 
-            <column numcolumns="4" name="Descripción del producto para la factura" order="109">
-                <widget type="text" fieldname="producto_descripcion" />
-            </column>
-
         </group>
 
         <group name="data-observaciones" numcolumns="12">
 
-            <column numcolumns="12" name="Contrato suspendido" order="107">
+            <column numcolumns="1" name="Contrato suspendido" order="107">
                 <widget type="checkbox" fieldname="suspendido" />
             </column>
 
-            <column numcolumns="12" name="Observaciones" order="107">
+            <column numcolumns="4" name="Mostrar próxima renovacion en la factura" order="107">
+                <widget type="checkbox" fieldname="mostrar_proxima_renovacion_en_factura" />
+            </column>
+
+            <column numcolumns="12" name="Descripción del producto" order="108">
+                <widget type="textarea" fieldname="producto_descripcion" />
+            </column>
+
+            <column numcolumns="12" name="Observaciones" order="109">
                 <widget type="textarea" fieldname="observaciones" />
             </column>
+
         </group>
 
     </columns>
