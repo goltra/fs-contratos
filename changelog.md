@@ -1,8 +1,12 @@
-2023-02-09: Version 1.3
+2022-05-27: Versión 1.3
 
+    Mejoras:
+      * Añadimos productos al contrato
+      * Añadimos posibilidad de renovar contratos desde el listado
+        
     Correcciones:
-    * Compatibilidad PHP 8.0
-    * Revisión de errores
+        * Soporte PHP 8.0
+        * Revisión de errores
 
 
 2022-04-19: Version 1.2
