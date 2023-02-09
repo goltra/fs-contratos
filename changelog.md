@@ -1,4 +1,4 @@
-2022-05-27: Versión 1.3
+2023-02-09: Versión 1.3
 
     Mejoras:
       * Añadimos productos al contrato
