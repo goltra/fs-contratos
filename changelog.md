@@ -1,3 +1,10 @@
+2023-02-09: Versión 1.4
+        
+    Correcciones:
+        * Corrección en la validación del campo renovación del contrato.
+        * Corrección de estilos.
+        
+
 2023-02-09: Versión 1.3
 
     Mejoras:

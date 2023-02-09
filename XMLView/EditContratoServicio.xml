@@ -22,8 +22,8 @@
                 <widget type="date" fieldname="fecha_alta"  required="true" />
             </column>
 
-            <column numcolumns="2" name="Renovación" order="104" required="true">
-                <widget type="date" fieldname="fecha_renovacion" />
+            <column numcolumns="2" name="Renovación" order="104">
+                <widget type="date" fieldname="fecha_renovacion" required="true" />
             </column>
         </group>
         <group name="data-pago" numcolumns="12">
@@ -81,7 +81,7 @@
 
         <group name="data-observaciones" numcolumns="12">
 
-            <column numcolumns="1" name="Contrato suspendido" order="107">
+            <column numcolumns="2" name="Contrato suspendido" order="107">
                 <widget type="checkbox" fieldname="suspendido" />
             </column>
 
