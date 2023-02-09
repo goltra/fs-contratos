@@ -10,7 +10,8 @@ use FacturaScripts\Plugins\Contratos\Model\ContratoServicio;
 
 class ListContratoServicio extends ListController
 {
-    public function getPageData() {
+    public function getPageData():array
+    {
         $data = parent::getPageData();
         $data["title"] = "Contratos";
         $data["menu"] = "sales";
