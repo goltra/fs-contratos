@@ -4,7 +4,6 @@ namespace FacturaScripts\Plugins\Contratos\Model;
 use Exception;
 use FacturaScripts\Core\Base\Calculator;
 use FacturaScripts\Core\Base\DataBase;
-use FacturaScripts\Core\Lib\BusinessDocumentTools;
 use FacturaScripts\Core\Lib\ListFilter\PeriodTools;
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Model\Base\ModelTrait;
@@ -227,8 +226,8 @@ class ContratoServicio extends ModelClass
                 throw new Exception('Error al generar la factura, la linea no es correcta.');
 
             // recalculo los totales
-            $tool = new BusinessDocumentTools();
-            $tool->recalculate($factura);
+            $lines = $factura->getLines();
+            Calculator::calculate($factura, $lines, true);
 
             $generator = new InvoiceToAccounting();
             $generator->generate($factura);

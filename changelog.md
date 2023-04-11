@@ -1,4 +1,9 @@
 2023-02-09: Versión 1.4
+
+    Correcciones:
+        * Sustitución clase BusinessDocumentTools por Calculator
+
+2023-02-09: Versión 1.4
         
     Correcciones:
         * Corrección en la validación del campo renovación del contrato.
