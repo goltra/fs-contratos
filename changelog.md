@@ -1,4 +1,4 @@
-2023-02-09: Versión 1.4
+2023-02-09: Versión 1.5
 
     Correcciones:
         * Sustitución clase BusinessDocumentTools por Calculator
