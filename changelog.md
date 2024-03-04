@@ -1,3 +1,9 @@
+2024-03-04: Versión 1.5
+
+    Correcciones:
+        * Cambio clase Toolbox por Tools
+        * Función all es ahora estática.
+
 2023-02-09: Versión 1.4
         
     Correcciones:
