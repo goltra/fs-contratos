@@ -2,6 +2,7 @@
 namespace FacturaScripts\Plugins\Contratos\Controller;
 
 use FacturaScripts\Core\Lib\ExtendedController\EditController;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Plugins\Contratos\Model\ContratoServicio;
 
 class EditContratoServicio extends EditController
@@ -61,12 +62,12 @@ class EditContratoServicio extends EditController
     {
 
         if (!$this->request->query->get('code')){
-            $this->Toolbox()->log()->error('No hay contrato para renovar.');
+            Tools::log()->error('No hay contrato para renovar.');
             return;
         }
 
         if (!$this->request->request->get('date')){
-            $this->Toolbox()->log()->error('No has seleccionado una fecha para la factura');
+            Tools::log()->error('No has seleccionado una fecha para la factura');
             return;
         }
 
@@ -74,7 +75,7 @@ class EditContratoServicio extends EditController
         $contrato->loadFromCode($this->request->query->get('code'));
 
         if ($contrato->hasErrorsToRenew()){
-            $this->Toolbox()->log()->error('No se ha renovado el contrato, por favor soluciona las incidencias y vuelve a intentarlo');
+            Tools::log()->error('No se ha renovado el contrato, por favor soluciona las incidencias y vuelve a intentarlo');
             return;
         }
 
@@ -83,11 +84,11 @@ class EditContratoServicio extends EditController
 
         switch ($res['status']){
             case 'error':
-                $this->Toolbox()->log()->error($res['message']);
+                Tools::log()->error($res['message']);
                 break;
 
             case 'ok':
-                $this->Toolbox()->log()->notice($res['message']);
+                Tools::log()->notice($res['message']);
                 break;
         }
     }

@@ -1,16 +1,15 @@
 <?php
 namespace FacturaScripts\Plugins\Contratos\Controller;
 
-use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\DataSrc\Impuestos;
-use FacturaScripts\Core\Lib\ExtendedController\ListController;
+use FacturaScripts\Core\Tools;
+use FacturaScripts\Dinamic\Lib\ExtendedController\ListController;
 use FacturaScripts\Dinamic\Model\FacturaCliente;
 use FacturaScripts\Plugins\Contratos\Model\ContratoServicio;
 
 class ListContratoServicio extends ListController
 {
-    public function getPageData():array
+    public function getPageData(): array
     {
         $data = parent::getPageData();
         $data["title"] = "Contratos";
@@ -94,19 +93,19 @@ class ListContratoServicio extends ListController
     protected function renewAction(): bool
     {
         if (!$this->request->request->get('code')){
-            $this->Toolbox()->log()->error('No hay contrato para renovar.');
+            Tools::log()->error('No hay contrato para renovar.');
             return true;
         }
 
         if (!$this->request->request->get('date')){
-            $this->Toolbox()->log()->error('No has seleccionado una fecha para la factura');
+            Tools::log()->error('No has seleccionado una fecha para la factura');
             return true;
         }
 
         $codes = explode(',', $this->request->request->get('code'));
 
         if (false === is_array($codes)) {
-            $this->toolBox()->i18nLog()->warning('no-selected-item');
+            Tools::log()->warning('no-selected-item');
             return true;
         }
 
@@ -122,7 +121,7 @@ class ListContratoServicio extends ListController
         }
 
         if ($hasError){
-            $this->Toolbox()->log()->error('No se ha renovado ningún contrato. Por favor, soluciona las incidencias y vuelve a intentarlo.');
+            Tools::log()->error('No se ha renovado ningún contrato. Por favor, soluciona las incidencias y vuelve a intentarlo.');
             return true;
         }
 

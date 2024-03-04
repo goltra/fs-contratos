@@ -65,15 +65,14 @@ class ContratoServicio extends ModelClass
      * @param int $limit
      * @return array
      */
-    public function all(array $where = [], array $order = [], int $offset = 0, int $limit = 50): array
+    public static function all(array $where = [], array $order = [], int $offset = 0, int $limit = 50): array
     {
         $modelList = parent::all($where, $order, $offset, $limit);
         $modelListEdited = [];
 
-
         if(count($modelList) > 0){
             foreach ($modelList as $v){
-                $v->estado_limite_renovacion = $this->checkLimiteRenovacion(strlen($v->fsiguiente_servicio) > 0 ? $v->fsiguiente_servicio : $v->fecha_renovacion);
+                $v->estado_limite_renovacion = self::checkLimiteRenovacion(strlen($v->fsiguiente_servicio) > 0 ? $v->fsiguiente_servicio : $v->fecha_renovacion);
                 $modelListEdited[] = $v;
             }
             $modelList = $modelListEdited;
@@ -87,7 +86,7 @@ class ContratoServicio extends ModelClass
      * @param $fecha
      * @return int
      */
-    private function checkLimiteRenovacion($fecha): int
+    static function checkLimiteRenovacion($fecha): int
     {
 
         $fecha = date('Y-m-d', strtotime($fecha));
