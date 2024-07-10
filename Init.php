@@ -4,6 +4,7 @@ namespace FacturaScripts\Plugins\Contratos;
 class Init extends \FacturaScripts\Core\Base\InitClass
 {
     public function init() {
+        $this->loadExtension(new Extension\Controller\EditCliente());
         // se ejecutara cada vez que carga FacturaScripts (si este plugin está activado).
     }
 
