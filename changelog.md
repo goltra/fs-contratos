@@ -1,3 +1,8 @@
+2024-03-04: Versión 1.6
+
+    Correcciones:
+        * Agrego contratos a la ficha del cliente
+
 2024-03-04: Versión 1.5
 
     Correcciones:
