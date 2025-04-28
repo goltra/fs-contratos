@@ -72,7 +72,7 @@ class ContratoServicio extends ModelClass
 
         if(count($modelList) > 0){
             foreach ($modelList as $v){
-                $v->estado_limite_renovacion = self::checkLimiteRenovacion(strlen($v->fsiguiente_servicio) > 0 ? $v->fsiguiente_servicio : $v->fecha_renovacion);
+                $v->estado_limite_renovacion = self::checkLimiteRenovacion(strlen($v->fsiguiente_servicio ?? '') > 0 ? $v->fsiguiente_servicio : $v->fecha_renovacion);
                 $modelListEdited[] = $v;
             }
             $modelList = $modelListEdited;
