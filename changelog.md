@@ -1,3 +1,12 @@
+2025-07-25: Versión 1.7
+
+    Mejoras:
+      * Agregamos linea en la factura en blanco cuando se quiera poner la próxima renovación
+        
+    Correcciones:
+        * Nueva forma de generar la factura, ahora el IVA se tiene en cuenta el del producto, no el del cliente.
+    
+
 2024-03-04: Versión 1.6
 
     Correcciones:
