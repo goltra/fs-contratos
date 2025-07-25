@@ -72,7 +72,7 @@ class ContratoServicio extends ModelClass
 
         if(count($modelList) > 0){
             foreach ($modelList as $v){
-                $v->estado_limite_renovacion = self::checkLimiteRenovacion(strlen($v->fsiguiente_servicio) > 0 ? $v->fsiguiente_servicio : $v->fecha_renovacion);
+                $v->estado_limite_renovacion = self::checkLimiteRenovacion(strlen($v->fsiguiente_servicio ?? '') > 0 ? $v->fsiguiente_servicio : $v->fecha_renovacion);
                 $modelListEdited[] = $v;
             }
             $modelList = $modelListEdited;
@@ -178,7 +178,12 @@ class ContratoServicio extends ModelClass
             }
         }
         else{
-            $this->addLineToInvoice($factura->idfactura, $renovationDate);
+            $this->addLineToInvoice($factura, $renovationDate);
+
+            if ($this->mostrar_proxima_renovacion_en_factura){
+                $this->addProximaRenovacionLine($factura, $renovationDate);
+            }
+
             $lines = $factura->getLines();
             Calculator::calculate($factura, $lines, true);
         }
@@ -221,8 +226,12 @@ class ContratoServicio extends ModelClass
 
         if ($factura->save()){
 
-            if (!$this->addLineToInvoice($factura->idfactura, $renovationDate))
+            if (!$this->addLineToInvoice($factura, $renovationDate))
                 throw new Exception('Error al generar la factura, la linea no es correcta.');
+
+            if ($this->mostrar_proxima_renovacion_en_factura){
+                $this->addProximaRenovacionLine($factura, $renovationDate);
+            }
 
             // recalculo los totales
             $lines = $factura->getLines();
@@ -243,31 +252,43 @@ class ContratoServicio extends ModelClass
 
     /**
      * Genera una linea de la factura con los datos del contrato
-     * @param string $idfactura
+     * @param FacturaCliente $factura
      * @param string $renovationDate
      * @return bool
      */
-    public function addLineToInvoice(string $idfactura, string $renovationDate): bool
+    public function addLineToInvoice(FacturaCliente $factura, string $renovationDate): bool
     {
-        $factura = new FacturaCliente();
-        $factura->loadFromCode($idfactura);
-
-        $linea = $factura->getNewLine();
         $producto = new Producto();
         $producto->loadFromCode($this->idproducto);
 
-        $linea->idproducto = $producto->idproducto;
-        $linea->idfactura = $factura->idfactura;
-        $linea->referencia = $producto->referencia;
-        $linea->descripcion = (strlen($this->producto_descripcion) > 0 ? $this->producto_descripcion : $producto->descripcion) . ' - desde el '.$this->fecha_renovacion. ' al '.date('d-m-Y', strtotime($renovationDate));
+        $linea = $factura->getNewProductLine($producto->referencia);
+
+        $linea->descripcion = (strlen($this->producto_descripcion) > 0 ? $this->producto_descripcion : $producto->descripcion);
+
+        if (!$this->mostrar_proxima_renovacion_en_factura)
+            $linea->descripcion .= ' - desde el '.$this->fecha_renovacion. ' al '.date('d-m-Y', strtotime($renovationDate));
+
         $linea->cantidad = 1;
-        $linea->pvpunitario = $this->importe_anual > 0 ? $this->importe_anual : $producto->precio;
-        $linea->pvptotal = $this->importe_anual > 0 ? $this->importe_anual : $producto->precio;
-        $linea->codimpuesto = $producto->getTax()->codimpuesto;
+        $linea->codimpuesto = $producto->codimpuesto;
+
+        if ($this->importe_anual > 0)
+            $linea->pvpunitario = $this->importe_anual;
 
         return $linea->save();
     }
 
-//    en codeModelSearch puedes sobrescribir valores de vuelta de un modelo
+    /**
+     * Pone una línea en blanco indicando la próxima renovación
+     * @param FacturaCliente $factura
+     * @param string $renovationDate
+     * @return bool
+     */
+    private function addProximaRenovacionLine(FacturaCliente $factura, string $renovationDate): bool
+    {
+        $linea = $factura->getNewLine();
+        $linea->idfactura = $factura->idfactura;
+        $linea->descripcion = 'Próxima renovación ' . date('d-m-Y', strtotime($renovationDate));
+        return $linea->save();
+    }
 
 }

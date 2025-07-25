@@ -37,7 +37,9 @@
         <column name="Agrupación" order="100">
             <widget type="text" fieldname="agrupacion" />
         </column>
-
+<!--        <column name="Suspendido" order="100">-->
+<!--            <widget type="checkbox" fieldname="suspendido" />-->
+<!--        </column>-->
     </columns>
 
     <modals>
