@@ -3,6 +3,8 @@ namespace FacturaScripts\Plugins\Contratos\Controller;
 
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\KernelException;
+use FacturaScripts\Core\Tools;
+
 
 class RenewContratoServicio extends Controller {
 
@@ -14,7 +16,7 @@ class RenewContratoServicio extends Controller {
         $data = parent::getPageData();
         $data["title"] = "Contratos";
         $data["menu"] = "sales";
-        $data["icon"] = "fas fa-file-signature";
+        $data["icon"] = "fa-solid fa-file-signature";
         $data["showonmenu"] = false;
         return $data;
     }

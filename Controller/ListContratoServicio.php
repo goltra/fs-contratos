@@ -15,7 +15,7 @@ class ListContratoServicio extends ListController
         $data = parent::getPageData();
         $data["title"] = "Contratos";
         $data["menu"] = "sales";
-        $data["icon"] = "fas fa-file-signature";
+        $data["icon"] = "fa-solid fa-file-signature";
         return $data;
     }
 
@@ -52,6 +52,8 @@ class ListContratoServicio extends ListController
 
         // Para ordenar
         $this->addOrderBy($viewName, ["fecha_renovacion"], "fecha_renovacion");
+        $this->addOrderBy($viewName, ["importe_anual"], "importe_anual");
+        $this->addOrderBy($viewName, ["fecha_alta"], "fecha_alta");
 
         // filtro general
         $this->addSearchFields($viewName, ['titulo', 'observaciones']);
@@ -82,7 +84,7 @@ class ListContratoServicio extends ListController
     {
         $this->addButton($viewName, [
             'action' => 'renew',
-            'icon' => 'fas fa-plus',
+            'icon' => 'fa-solid fa-plus',
             'label' => 'Renovar y generar factura',
             'type' => 'modal',
             'color' => 'info'

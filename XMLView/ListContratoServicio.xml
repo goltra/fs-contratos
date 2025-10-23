@@ -4,7 +4,7 @@
         <column name="Id" order="100">
             <widget type="text" fieldname="idcontrato" onclick="EditContratoServicio" />
         </column>
-        <column name="Cliente" order="100">
+        <column name="customer" order="100">
             <widget type="select" fieldname="codcliente" required="true">
                 <values source="clientes" fieldcode="codcliente" fieldtitle="nombre" />
             </widget>
@@ -43,7 +43,7 @@
     </columns>
 
     <modals>
-        <group name="renew" title="Renovar Contrato y generar factura" icon="fas fa-calendar-alt">
+        <group name="renew" title="Renovar Contrato y generar factura" icon="fa-solid fa-calendar-alt">
             <column name="Fecha para la factura">
                 <widget type="date" fieldname="date" />
             </column>

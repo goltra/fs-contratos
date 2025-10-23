@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <table>
     <column>
-        <name>idcontrato</name>
-        <type>serial</type>
-        <null>NO</null>
+        <name>agrupacion</name>
+        <type>character varying(150)</type>
+    </column>
+    <column>
+        <name>codagente</name>
+        <type>character varying(10)</type>
     </column>
     <column>
         <name>codcliente</name>
@@ -11,8 +14,9 @@
         <null>NO</null>
     </column>
     <column>
-        <name>codagente</name>
+        <name>codpago</name>
         <type>character varying(10)</type>
+        <null>NO</null>
     </column>
     <column>
         <name>fecha_alta</name>
@@ -24,43 +28,13 @@
         <null>NO</null>
     </column>
     <column>
-        <name>observaciones</name>
-        <type>text</type>
-    </column>
-    <column>
-        <name>codpago</name>
-        <type>character varying(10)</type>
-        <null>NO</null>
-    </column>
-    <column>
-        <name>importe_anual</name>
-        <type>double precision</type>
-    </column>
-    <column>
-        <name>periodo</name>
-        <type>character varying(10)</type>
-    </column>
-    <column>
         <name>fsiguiente_servicio</name>
         <type>date</type>
     </column>
     <column>
-        <name>titulo</name>
-        <type>character varying(35)</type>
-    </column>
-    <column>
-        <name>suspendido</name>
-        <type>boolean</type>
-        <default>false</default>
-    </column>
-    <column>
-        <name>mostrar_proxima_renovacion_en_factura</name>
-        <type>boolean</type>
-        <default>false</default>
-    </column>
-    <column>
-        <name>agrupacion</name>
-        <type>character varying(150)</type>
+        <name>idcontrato</name>
+        <type>serial</type>
+        <null>NO</null>
     </column>
     <column>
         <name>idfactura</name>
@@ -71,12 +45,53 @@
         <type>integer(11)</type>
     </column>
     <column>
+        <name>importe_anual</name>
+        <type>double precision</type>
+    </column>
+    <column>
+        <name>mostrar_proxima_renovacion_en_factura</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
+    <column>
+        <name>observaciones</name>
+        <type>text</type>
+    </column>
+    <column>
+        <name>periodo</name>
+        <type>character varying(10)</type>
+    </column>
+    <column>
         <name>producto_descripcion</name>
         <type>text</type>
+    </column>
+    <column>
+        <name>suspendido</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
+    <column>
+        <name>titulo</name>
+        <type>character varying(35)</type>
     </column>
     <constraint>
         <name>contrato_servicios_key</name>
         <type>PRIMARY KEY (idcontrato)</type>
-        <null>NO</null>
+    </constraint>
+    <constraint>
+        <name>ca_contrato_servicios_codcliente</name>
+        <type>FOREIGN KEY (codcliente) REFERENCES clientes (codcliente) ON DELETE RESTRICT ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_contrato_servicios_codagente</name>
+        <type>FOREIGN KEY (codagente) REFERENCES agentes (codagente) ON DELETE SET NULL ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_contrato_servicios_codpago</name>
+        <type>FOREIGN KEY (codpago) REFERENCES formaspago (codpago) ON DELETE RESTRICT ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_contrato_servicios_idproducto</name>
+        <type>FOREIGN KEY (idproducto) REFERENCES productos (idproducto) ON DELETE SET NULL ON UPDATE CASCADE</type>
     </constraint>
 </table>

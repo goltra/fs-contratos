@@ -1,14 +1,15 @@
 <?php
+
 namespace FacturaScripts\Plugins\Contratos\Model;
 
 use Exception;
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Lib\ListFilter\PeriodTools;
 use FacturaScripts\Core\Model\Producto;
-use FacturaScripts\Core\Tools;
-use FacturaScripts\Dinamic\Lib\Accounting\InvoiceToAccounting;
 use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Template\ModelTrait;
+use FacturaScripts\Core\Tools;
+use FacturaScripts\Dinamic\Lib\Accounting\InvoiceToAccounting;
 use FacturaScripts\Dinamic\Lib\Calculator;
 use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\FacturaCliente;
@@ -43,6 +44,14 @@ class ContratoServicio extends ModelClass
     const ESTADO_LIMITE_RENOVACION_WARNING = 1;
     const ESTADO_LIMITE_RENOVACION_DANGER = 2;
 
+    public function clear(): void
+    {
+        parent::clear();
+        $this->fecha_alta = Tools::date();
+        $this->fecha_renovacion = Tools::date('+1 month');
+        $this->importe_anual = 0;
+    }
+
 
     /**
      * @return string
@@ -73,15 +82,15 @@ class ContratoServicio extends ModelClass
         $modelList = self::traitAll($where, $order, $offset, $limit);
         $modelListEdited = [];
 
-        if(count($modelList) > 0){
-            foreach ($modelList as $v){
+        if (count($modelList) > 0) {
+            foreach ($modelList as $v) {
                 $v->estado_limite_renovacion = self::checkLimiteRenovacion(strlen($v->fsiguiente_servicio ?? '') > 0 ? $v->fsiguiente_servicio : $v->fecha_renovacion);
                 $modelListEdited[] = $v;
             }
             $modelList = $modelListEdited;
         }
 
-        return  $modelList;
+        return $modelList;
     }
 
     /**
@@ -94,10 +103,10 @@ class ContratoServicio extends ModelClass
 
         $fecha = date('Y-m-d', strtotime($fecha));
 
-        if($fecha < date('Y-m-d'))
+        if ($fecha < date('Y-m-d'))
             return self::ESTADO_LIMITE_RENOVACION_DANGER;
 
-        if($fecha <= date('Y-m-d', strtotime('+1 month')))
+        if ($fecha <= date('Y-m-d', strtotime('+1 month')))
             return self::ESTADO_LIMITE_RENOVACION_WARNING;
 
         return self::ESTADO_LIMITE_RENOVACION_OK;
@@ -114,7 +123,7 @@ class ContratoServicio extends ModelClass
         $agrupaciones = $dataBase->select("SELECT DISTINCT agrupacion FROM contrato_servicios where agrupacion is not null;");
         $res = [];
 
-        foreach ($agrupaciones as $a){
+        foreach ($agrupaciones as $a) {
             $res[] = ['code' => $a['agrupacion'], 'description' => $a['agrupacion']];
         }
 
@@ -130,23 +139,23 @@ class ContratoServicio extends ModelClass
     {
         $error = false;
 
-        if (strlen($this->codcliente) === 0){
-            Tools::log()->error('Error al comprobar el contrato '.$this->titulo.', no hay un cliente vinculado.');
+        if (strlen($this->codcliente) === 0) {
+            Tools::log()->error('Error al comprobar el contrato ' . $this->titulo . ', no hay un cliente vinculado.');
             $error = true;
         }
 
-        if (strlen($this->idproducto) === 0){
-            Tools::log()->error('Error al comprobar el contrato '.$this->titulo.', no hay un producto vinculado.');
+        if (strlen($this->idproducto) === 0) {
+            Tools::log()->error('Error al comprobar el contrato ' . $this->titulo . ', no hay un producto vinculado.');
             $error = true;
         }
 
-        if ($this->periodo === '------'){
-            Tools::log()->error('Error al comprobar el contrato '.$this->titulo.', no se ha establecido un periodo de renovación.');
+        if ($this->periodo === '------') {
+            Tools::log()->error('Error al comprobar el contrato ' . $this->titulo . ', no se ha establecido un periodo de renovación.');
             $error = true;
         }
 
-        if (strlen($this->fecha_renovacion) === 0){
-            Tools::log()->error('Error al comprobar el contrato '.$this->titulo.', no se ha establecido una fecha de renovación');
+        if (strlen($this->fecha_renovacion) === 0) {
+            Tools::log()->error('Error al comprobar el contrato ' . $this->titulo . ', no se ha establecido una fecha de renovación');
             $error = true;
         }
 
@@ -171,19 +180,17 @@ class ContratoServicio extends ModelClass
         $database = new DataBase();
         $database->beginTransaction();
 
-        if ($factura === null){
+        if ($factura === null) {
             try {
                 $factura = $this->generateInvoice($invoiceDate, $renovationDate);
-            }
-            catch (Exception $e){
+            } catch (Exception $e) {
                 $database->rollback();
                 return ['status' => 'error', 'message' => $e->getMessage()];
             }
-        }
-        else{
+        } else {
             $this->addLineToInvoice($factura, $renovationDate);
 
-            if ($this->mostrar_proxima_renovacion_en_factura){
+            if ($this->mostrar_proxima_renovacion_en_factura) {
                 $this->addProximaRenovacionLine($factura, $renovationDate);
             }
 
@@ -197,11 +204,10 @@ class ContratoServicio extends ModelClass
         $this->idfactura = $factura->idfactura;
         $this->fecha_renovacion = $renovationDate;
 
-        if ($this->save()){
+        if ($this->save()) {
             $database->commit();
-            return ['status' => 'ok', 'message' => 'Contrato renovado hasta el '.date('d/m/Y', strtotime($renovationDate)), 'codcliente' => $factura->codcliente, 'idfactura' => $factura->idfactura];
-        }
-        else{
+            return ['status' => 'ok', 'message' => 'Contrato renovado hasta el ' . date('d/m/Y', strtotime($renovationDate)), 'codcliente' => $factura->codcliente, 'idfactura' => $factura->idfactura];
+        } else {
             $database->rollback();
             return ['status' => 'error', 'message' => 'Error al actualizar el contrato'];
         }
@@ -227,12 +233,12 @@ class ContratoServicio extends ModelClass
         if (strlen($this->codpago) > 0)
             $factura->codpago = $this->codpago;
 
-        if ($factura->save()){
+        if ($factura->save()) {
 
             if (!$this->addLineToInvoice($factura, $renovationDate))
                 throw new Exception('Error al generar la factura, la linea no es correcta.');
 
-            if ($this->mostrar_proxima_renovacion_en_factura){
+            if ($this->mostrar_proxima_renovacion_en_factura) {
                 $this->addProximaRenovacionLine($factura, $renovationDate);
             }
 
@@ -247,8 +253,7 @@ class ContratoServicio extends ModelClass
                 throw new Exception('Error al guardar el asiento contable.');
 
             return $factura;
-        }
-        else
+        } else
             throw new Exception('Error al generar la factura.');
     }
 
@@ -269,7 +274,7 @@ class ContratoServicio extends ModelClass
         $linea->descripcion = (strlen($this->producto_descripcion) > 0 ? $this->producto_descripcion : $producto->descripcion);
 
         if (!$this->mostrar_proxima_renovacion_en_factura)
-            $linea->descripcion .= ' - desde el '.$this->fecha_renovacion. ' al '.date('d-m-Y', strtotime($renovationDate));
+            $linea->descripcion .= ' - desde el ' . $this->fecha_renovacion . ' al ' . date('d-m-Y', strtotime($renovationDate));
 
         $linea->cantidad = 1;
         $linea->codimpuesto = $producto->codimpuesto;

@@ -1,4 +1,5 @@
 <?php
+
 namespace FacturaScripts\Plugins\Contratos\Controller;
 
 use FacturaScripts\Core\Lib\ExtendedController\EditController;
@@ -17,7 +18,7 @@ class EditContratoServicio extends EditController
     {
         $data = parent::getPageData();
         $data["title"] = "Contrato";
-        $data["icon"] = "fas fa-search";
+        $data["icon"] = "fa-solid fa-search";
         return $data;
     }
 
@@ -29,7 +30,7 @@ class EditContratoServicio extends EditController
 
     protected function execPreviousAction($action): bool
     {
-        if ($action === 'renew'){
+        if ($action === 'renew') {
             $this->renewAction();
             return true;
         }
@@ -37,36 +38,41 @@ class EditContratoServicio extends EditController
         return parent::execPreviousAction($action);
     }
 
-    protected function execAfterAction($action)
+    protected function loadData($viewName, $view)
     {
-        $contrato = new ContratoServicio();
-        $contrato->load($this->request->query->get('code'));
+        $mvn = $this->getMainViewName();
 
-        if (isset($contrato->suspendido) && $contrato->suspendido === false )
-            $this->addButton('EditContratoServicio', [
-                'action' => 'renew',
-                'icon' => 'fas fa-plus',
-                'label' => 'Renovar y generar factura',
-                'type' => 'modal',
-                'color' => 'info'
-            ]);
+        switch ($viewName) {
+            case $mvn:
+                parent::loadData($viewName, $view);
+                if (false === $view->model->exists()) {
+                    break;
+                }
 
-        parent::execAfterAction($action);
+                if ($view->model->suspendido === false) {
+                    $this->addButton('EditContratoServicio', [
+                        'action' => 'renew',
+                        'icon' => 'fa-solid fa-plus',
+                        'label' => 'Renovar y generar factura',
+                        'type' => 'modal',
+                        'color' => 'info'
+                    ]);
+                }
+                break;
+        }
     }
-
 
     /**
      * Función para renovar el servicio, crea la factura y actualiza el contrato.
      */
     private function renewAction(): void
     {
-
-        if (!$this->request->query->get('code')){
+        if (!$this->request->query->get('code')) {
             Tools::log()->error('No hay contrato para renovar.');
             return;
         }
 
-        if (!$this->request->request->get('date')){
+        if (!$this->request->request->get('date')) {
             Tools::log()->error('No has seleccionado una fecha para la factura');
             return;
         }
@@ -74,7 +80,7 @@ class EditContratoServicio extends EditController
         $contrato = new ContratoServicio();
         $contrato->load($this->request->query->get('code'));
 
-        if ($contrato->hasErrorsToRenew()){
+        if ($contrato->hasErrorsToRenew()) {
             Tools::log()->error('No se ha renovado el contrato, por favor soluciona las incidencias y vuelve a intentarlo');
             return;
         }
@@ -82,7 +88,7 @@ class EditContratoServicio extends EditController
 
         $res = $contrato->renewService($this->request->request->get('date'));
 
-        switch ($res['status']){
+        switch ($res['status']) {
             case 'error':
                 Tools::log()->error($res['message']);
                 break;
@@ -92,5 +98,4 @@ class EditContratoServicio extends EditController
                 break;
         }
     }
-
 }
