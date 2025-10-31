@@ -139,12 +139,12 @@ class ContratoServicio extends ModelClass
     {
         $error = false;
 
-        if (strlen($this->codcliente) === 0) {
+        if (strlen($this->codcliente ?? '') === 0) {
             Tools::log()->error('Error al comprobar el contrato ' . $this->titulo . ', no hay un cliente vinculado.');
             $error = true;
         }
 
-        if (strlen($this->idproducto) === 0) {
+        if (strlen($this->idproducto ?? '') === 0) {
             Tools::log()->error('Error al comprobar el contrato ' . $this->titulo . ', no hay un producto vinculado.');
             $error = true;
         }
@@ -154,7 +154,7 @@ class ContratoServicio extends ModelClass
             $error = true;
         }
 
-        if (strlen($this->fecha_renovacion) === 0) {
+        if (strlen($this->fecha_renovacion ?? '') === 0) {
             Tools::log()->error('Error al comprobar el contrato ' . $this->titulo . ', no se ha establecido una fecha de renovación');
             $error = true;
         }

@@ -3,7 +3,6 @@ namespace FacturaScripts\Plugins\Contratos\Controller;
 
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\KernelException;
-use FacturaScripts\Core\Tools;
 
 
 class RenewContratoServicio extends Controller {
@@ -32,7 +31,7 @@ class RenewContratoServicio extends Controller {
 
     private function init(): void
     {
-        $res = $this->request->query->get('params');
+        $res = unserialize($this->request->query->get('params'));
 
         $this->renovados = array_filter($res, function ($c){ return $c['status'] === 'ok'; });
         $this->noRenovados = array_filter($res, function ($c){ return $c['status'] === 'error'; });

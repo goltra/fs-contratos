@@ -97,7 +97,7 @@ class ListContratoServicio extends ListController
      */
     protected function renewAction(): bool
     {
-        if (!$this->request->request->get('code')){
+        if (!$this->request->request->get('codes')){
             Tools::log()->error('No hay contrato para renovar.');
             return true;
         }
@@ -107,7 +107,8 @@ class ListContratoServicio extends ListController
             return true;
         }
 
-        $codes = explode(',', $this->request->request->get('code'));
+
+        $codes = unserialize($this->request->request->get('codes'));
 
         if (false === is_array($codes)) {
             Tools::log()->warning('no-selected-item');

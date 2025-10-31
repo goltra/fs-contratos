@@ -1,3 +1,13 @@
+2025-10-31: Versión 2,1
+
+     Correcciones:
+        * Cuando se reciben datos por post que son un array, ahora llegan serializados y también cambia el nombre del campo.
+
+2025-10-17: Versión 2
+
+     Correcciones:
+        * Revisión compatibilidad con la versión 2025 por Carlos FS
+
 2025-10-13: Versión 1.9
 
      Mejoras:
