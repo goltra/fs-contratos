@@ -3,6 +3,7 @@
 namespace FacturaScripts\Plugins\Contratos;
 
 use FacturaScripts\Core\Template\InitClass;
+use FacturaScripts\Dinamic\Lib\API\APIModel;
 
 class Init extends InitClass
 {
@@ -10,6 +11,10 @@ class Init extends InitClass
     {
         // se ejecutara cada vez que carga FacturaScripts (si este plugin está activado).
         $this->loadExtension(new Extension\Controller\EditCliente());
+
+        if (method_exists(APIModel::class, 'excludeModel')) {
+            APIModel::excludeModel('ContratoServicio');
+        }
     }
 
     public function update(): void
